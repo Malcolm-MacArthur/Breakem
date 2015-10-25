@@ -9,15 +9,16 @@
 import SpriteKit
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
-    var blueBlock:[SKSpriteNode] = []
+    var blueBlock :[SKSpriteNode] = []
     var boundary:[SKSpriteNode] = []
     var ball = SKSpriteNode()
     var paddle = SKSpriteNode()
     let ballCategory :UInt32 = 0x1 << 0
     var BBCategory :[UInt32] = []
-    let boundaryCategory :UInt32 = 0x1 << 2
+    var boundaryCategory :[UInt32] = []//0x1 << 2
     let paddleCategory :UInt32 = 0x1 << 3
     var index : Int = 0
+    var ballPastVelocity :CGVector = CGVector(dx: 0, dy: 0)
     
     override func didMoveToView(view: SKView) {
         /* Setup your scene here */
@@ -33,18 +34,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             blueBlock[index].physicsBody = SKPhysicsBody(texture: blueBlock[index].texture!, size: blueBlock[index].size)
             blueBlock[index].physicsBody!.usesPreciseCollisionDetection = true
             blueBlock[index].physicsBody!.categoryBitMask = BBCategory[index]
-            blueBlock[index].physicsBody!.collisionBitMask = BBCategory[index] | ballCategory
-            blueBlock[index].physicsBody!.contactTestBitMask = BBCategory[index] | ballCategory
+            //blueBlock[index].physicsBody!.collisionBitMask = //BBCategory[index] | ballCategory
+            //blueBlock[index].physicsBody!.contactTestBitMask =  //BBCategory[index] | ballCategory
             blueBlock[index].physicsBody!.dynamic = false
         }
         
         for index = 0; index <= 2; ++index {
+            let number = index + 10
+            boundaryCategory.append(0x1 << UInt32(number))
+            
             boundary.append(self.childNodeWithName("boundary_\(index)") as! SKSpriteNode)
             boundary[index].physicsBody = SKPhysicsBody(rectangleOfSize: boundary[index].size)
             boundary[index].physicsBody!.usesPreciseCollisionDetection = true
-            boundary[index].physicsBody!.categoryBitMask = boundaryCategory
-            boundary[index].physicsBody!.collisionBitMask = boundaryCategory | ballCategory
-            boundary[index].physicsBody!.contactTestBitMask = boundaryCategory | ballCategory
+            boundary[index].physicsBody!.categoryBitMask = boundaryCategory[index]
+            boundary[index].physicsBody!.collisionBitMask = boundaryCategory[index] | ballCategory
+            boundary[index].physicsBody!.contactTestBitMask = boundaryCategory[index] | ballCategory
             boundary[index].physicsBody!.dynamic = false
         }
         
@@ -59,10 +63,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         ball = self.childNodeWithName("ball") as! SKSpriteNode
         ball.physicsBody = SKPhysicsBody(texture: ball.texture!, size: ball.size)
         ball.physicsBody!.categoryBitMask = ballCategory
+        //ball.physicsBody!.collisionBitMask = BBCategory[4]
+        //ball.physicsBody!.contactTestBitMask = BBCategory[4]
         ball.physicsBody!.usesPreciseCollisionDetection = true
         ball.physicsBody!.friction = 0.0
         ball.physicsBody!.restitution = 1
-        ball.physicsBody!.velocity = CGVector(dx: 0, dy: 100)
+        ball.physicsBody!.velocity = CGVector(dx: 0, dy: 300)
+        ballPastVelocity = ball.physicsBody!.velocity
         
         
     }
@@ -71,8 +78,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         for touch in touches {
             let location = touch.locationInNode(self)
             paddle.position.x = location.x
-            
-            ball.physicsBody!.velocity = CGVector(dx: 0, dy: 100)
         }
     }
     
@@ -90,9 +95,43 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func didBeginContact(contact: SKPhysicsContact) {
         for index = 0; index <= 7; ++index {
             if contact.bodyA.categoryBitMask == BBCategory[index] && contact.bodyB.categoryBitMask == ballCategory {
-                blueBlock[index].physicsBody!.categoryBitMask = 0
-                //ball.physicsBody!.angularVelocity = CGFloat(CGVector(dx: 2, dy: 2))
+                //if blueBlock[index].physicsBody != nil{
+                //blueBlock[index].physicsBody!.categoryBitMask = 0
+                blueBlock[index].physicsBody!.collisionBitMask = 0
+                //blueBlock[index].physicsBody!.contactTestBitMask = 0
+                ball.physicsBody!.velocity.dy = ballPastVelocity.dy - ballPastVelocity.dy * 2
+                ballPastVelocity.dy = ball.physicsBody!.velocity.dy
+                //blueBlock[index].physicsBody = nil
+                print(ball.physicsBody!.velocity.dy)
+                print("contact")
+                //}
             }
+        }
+        
+        for index = 0; index <= 2; ++index {
+            if contact.bodyA.categoryBitMask == boundaryCategory[index] && contact.bodyB.categoryBitMask == ballCategory {
+                if index == 0 {
+                    ball.physicsBody!.velocity.dx = ballPastVelocity.dx + ballPastVelocity.dx * 2
+                    ballPastVelocity.dx = ball.physicsBody!.velocity.dx
+                }
+                
+                if index == 1{
+                    ball.physicsBody!.velocity.dy = ballPastVelocity.dy - ballPastVelocity.dy * 2
+                    ballPastVelocity.dy = ball.physicsBody!.velocity.dy
+                    print(ball.physicsBody!.velocity.dy)
+                }
+                
+                if index == 2 {
+                    ball.physicsBody!.velocity.dx = ballPastVelocity.dx - ballPastVelocity.dx * 2
+                    ballPastVelocity.dx = ball.physicsBody!.velocity.dx
+                }
+            }
+        }
+        
+        if contact.bodyA.categoryBitMask == paddleCategory && contact.bodyB.categoryBitMask == ballCategory {
+            ball.physicsBody!.velocity.dy = ballPastVelocity.dy - ballPastVelocity.dy * 2
+            ballPastVelocity.dy = ball.physicsBody!.velocity.dy
+            print(ball.physicsBody!.velocity.dy)
         }
     }
 }

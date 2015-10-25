@@ -409,6 +409,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = Breakem/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.MalcolmMacArthur.Breakem;
@@ -420,6 +421,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = Breakem/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.MalcolmMacArthur.Breakem;
@@ -496,6 +498,7 @@
 				319CA5BB1BD7383200D8498D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		319CA5BC1BD7383200D8498D /* Build configuration list for PBXNativeTarget "BreakemTests" */ = {
 			isa = XCConfigurationList;
@@ -504,6 +507,7 @@
 				319CA5BE1BD7383200D8498D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		319CA5BF1BD7383200D8498D /* Build configuration list for PBXNativeTarget "BreakemUITests" */ = {
 			isa = XCConfigurationList;
@@ -512,6 +516,7 @@
 				319CA5C11BD7383200D8498D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

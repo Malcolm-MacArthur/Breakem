@@ -9,13 +9,15 @@
 import SpriteKit
 
 class GameScene: SKScene {
+    var blueBlock:[SKSpriteNode] = []
+    
     override func didMoveToView(view: SKView) {
         /* Setup your scene here */
-        let blueBlock = [SKSpriteNode](count: 4, repeatedValue: self.childNodeWithName("BlueBlock") as! SKSpriteNode)
-        blueBlock[0].xScale = 2
-        blueBlock[1].xScale = 0.5
-        blueBlock[2].xScale = 2
-        blueBlock[3].xScale = 2
+        var index : Int
+        for index = 0; index < 5; ++index {
+            blueBlock.append(self.childNodeWithName("BlueBlock_\(index)") as! SKSpriteNode)
+            //blueBlock[index].xScale = 2
+        }
     }
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {

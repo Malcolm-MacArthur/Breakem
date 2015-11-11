@@ -15,7 +15,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var paddle = SKSpriteNode()
     let ballCategory :UInt32 = 0x1 << 0
     var BBCategory :[UInt32] = []
-    var boundaryCategory :[UInt32] = []//0x1 << 2
+    var boundaryCategory :[UInt32] = []
     let paddleCategory :UInt32 = 0x1 << 3
     var index : Int = 0
     var ballPastVelocity :CGVector = CGVector(dx: 0, dy: 0)
@@ -26,21 +26,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.physicsWorld.gravity = CGVector(dx: 0, dy: 0)
         
 
-        for index = 0; index <= 7; ++index {
+        for index = 0; index <= 8; ++index {
             let number = index + 4
             BBCategory.append(0x1 << UInt32(number))
-            
             blueBlock.append(self.childNodeWithName("BlueBlock_\(index)") as! SKSpriteNode)
             blueBlock[index].physicsBody = SKPhysicsBody(texture: blueBlock[index].texture!, size: blueBlock[index].size)
             blueBlock[index].physicsBody!.usesPreciseCollisionDetection = true
             blueBlock[index].physicsBody!.categoryBitMask = BBCategory[index]
-            //blueBlock[index].physicsBody!.collisionBitMask = //BBCategory[index] | ballCategory
-            //blueBlock[index].physicsBody!.contactTestBitMask =  //BBCategory[index] | ballCategory
+            blueBlock[index].physicsBody!.collisionBitMask = BBCategory[index] | ballCategory
+            blueBlock[index].physicsBody!.contactTestBitMask =  BBCategory[index] | ballCategory
             blueBlock[index].physicsBody!.dynamic = false
         }
         
         for index = 0; index <= 2; ++index {
-            let number = index + 10
+            let number = index + 13
             boundaryCategory.append(0x1 << UInt32(number))
             
             boundary.append(self.childNodeWithName("boundary_\(index)") as! SKSpriteNode)
@@ -63,14 +62,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         ball = self.childNodeWithName("ball") as! SKSpriteNode
         ball.physicsBody = SKPhysicsBody(texture: ball.texture!, size: ball.size)
         ball.physicsBody!.categoryBitMask = ballCategory
-        //ball.physicsBody!.collisionBitMask = BBCategory[4]
-        //ball.physicsBody!.contactTestBitMask = BBCategory[4]
         ball.physicsBody!.usesPreciseCollisionDetection = true
         ball.physicsBody!.friction = 0.0
         ball.physicsBody!.restitution = 1
         ball.physicsBody!.velocity = CGVector(dx: 0, dy: 300)
         ballPastVelocity = ball.physicsBody!.velocity
-        
         
     }
     
@@ -91,20 +87,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     override func update(currentTime: CFTimeInterval) {
         /* Called before each frame is rendered */
     }
+
     
     func didBeginContact(contact: SKPhysicsContact) {
-        for index = 0; index <= 7; ++index {
+        for index = 0; index <= 8/*blueBlock!.count - 1*/; ++index {
             if contact.bodyA.categoryBitMask == BBCategory[index] && contact.bodyB.categoryBitMask == ballCategory {
-                //if blueBlock[index].physicsBody != nil{
-                //blueBlock[index].physicsBody!.categoryBitMask = 0
-                blueBlock[index].physicsBody!.collisionBitMask = 0
-                //blueBlock[index].physicsBody!.contactTestBitMask = 0
+
+                blueBlock[index].removeFromParent()
+
                 ball.physicsBody!.velocity.dy = ballPastVelocity.dy - ballPastVelocity.dy * 2
                 ballPastVelocity.dy = ball.physicsBody!.velocity.dy
-                //blueBlock[index].physicsBody = nil
-                print(ball.physicsBody!.velocity.dy)
+                //print(ball.physicsBody!.velocity.dy)
                 print("contact")
-                //}
+                
             }
         }
         
@@ -118,7 +113,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 if index == 1{
                     ball.physicsBody!.velocity.dy = ballPastVelocity.dy - ballPastVelocity.dy * 2
                     ballPastVelocity.dy = ball.physicsBody!.velocity.dy
-                    print(ball.physicsBody!.velocity.dy)
+                    //print(ball.physicsBody!.velocity.dy)
                 }
                 
                 if index == 2 {

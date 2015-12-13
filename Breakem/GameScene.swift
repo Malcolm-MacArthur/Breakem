@@ -105,7 +105,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             lblGameOver.position = CGPoint(x: CGRectGetMidX(self.frame), y: CGRectGetMidY(self.frame))
             addChild(lblGameOver)
             self.paused = true
-        } 
+        }
+        
+        /*func allEqual<T : Equatable>(array : [T]) -> Bool {
+            
+        }*/
+ 
     }
 
     
@@ -113,6 +118,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         for index = 0; index <= 8; ++index {
             if contact.bodyA.categoryBitMask == BBCategory[index] && contact.bodyB.categoryBitMask == ballCategory {
                 blueBlock[index].removeFromParent()
+                blueBlock[index].physicsBody!.dynamic = true
             }
         }
         
